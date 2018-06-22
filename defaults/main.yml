@@ -1,0 +1,6 @@
+---
+# defaults file for egeneralov.mtprotoproxy
+
+proxy_port: 3256
+secret: 0123456789abcdef0123456789abcdef
+# adtag: 3c09c680b76ee91a4c25ad51f742267d

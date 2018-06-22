@@ -1,0 +1,10 @@
+[Unit]
+Description=MtProto python proxy
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/bin/mtprotoproxy {{ proxy_port }} {{ secret }} {% if adtag is defined %}{{ adtag }}{% endif %}
+
+[Install]
+WantedBy=multi-user.target

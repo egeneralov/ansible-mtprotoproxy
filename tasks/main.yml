@@ -1,0 +1,68 @@
+---
+# tasks file for egeneralov.mtprotoproxy
+
+- name: Install system-wide dependencies
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  with_items:
+    - python3-pip
+    - iptables
+
+- name: Install system-wide dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  with_items:
+    - python3-pip
+    - iptables
+
+- name: Install mtprotoproxy
+  pip:
+    name: mtprotoproxy
+    executable: pip3
+    state: present
+
+- name: Install service
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/mtprotoproxy.service
+
+- name: Start mtprotoproxy
+  systemd:
+    name: mtprotoproxy
+    state: started
+    daemon_reload: yes
+
+- name: Wait to proxy start
+  wait_for:
+    port: "{{ proxy_port }}"
+    timeout: 10
+
+- name: "iptables: Allow incoming connections"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ proxy_port }}"
+    ctstate: NEW,ESTABLISHED
+    jump: ACCEPT
+    comment: Allow outgoing connections to web
+
+- name: "iptables: Allow related and established connections"
+  iptables:
+    chain: "{{ item }}"
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+    comment: Allow related and established connections
+  with_items:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+
+- name: Display link for telegram
+  debug:
+    msg: "tg://proxy?server={{ ansible_default_ipv4.address }}&secret={{ secret }}&port={{ proxy_port }}"

@@ -1,0 +1,26 @@
+galaxy_info:
+  author: Eduard Generalov <eduard@generalov.net>
+  description: Deploy non-official python telegram proxy server.
+  company: mail.ru
+  license: MIT
+  min_ansible_version: 1.2
+  platforms:
+  - name: Fedora
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+    - buster
+    - sid
+  - name: Ubuntu
+    version:
+    - all
+  galaxy_tags:
+    - telegram
+    - tg
+    - proxy
+    - mtproto
+    - mtprotoproxy
+dependencies: []
