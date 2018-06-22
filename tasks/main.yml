@@ -21,6 +21,15 @@
     - python3-pip
     - iptables
 
+- name: Install system-wide dependencies
+  dnf:
+    name: "{{ item }}"
+    state: present
+  when: ansible_distribution == 'Fedora'
+  with_items:
+    - python3-pip
+    - iptables
+
 - name: Install mtprotoproxy
   pip:
     name: mtprotoproxy
